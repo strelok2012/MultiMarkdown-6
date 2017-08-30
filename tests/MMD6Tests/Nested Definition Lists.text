@@ -1,9 +1,0 @@
-Title:	Nested Definition Lists
-latex config:	article
-
-bat
-:	*foo*
-
-	bar
-
-		*foo*
