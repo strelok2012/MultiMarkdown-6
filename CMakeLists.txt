@@ -140,31 +140,6 @@ ENDMACRO(ADD_LINKED_FRAMEWORK)
 # Process Template Files
 # ======================
 
-file(READ ${PROJECT_SOURCE_DIR}/LICENSE.txt My_Project_License)
-
-string(REGEX REPLACE "\n" "\n\t" My_Project_License_Indented ${My_Project_License})
-
-string(REGEX REPLACE "\"" "\\\\\"" My_Project_License_Escaped ${My_Project_License_Indented})
-
-string(REGEX REPLACE "\n" "\\\\n\"\\\\\n\"" My_Project_License_Literal ${My_Project_License_Escaped})
-
-
-configure_file (
-	"${PROJECT_SOURCE_DIR}/templates/template.c.in"
-	"${PROJECT_BINARY_DIR}/template.c"
-)
-
-configure_file (
-	"${PROJECT_SOURCE_DIR}/templates/template.h.in"
-	"${PROJECT_BINARY_DIR}/template.h"
-)
-
-# Update the project README, to pull in new version #, etc.
-configure_file (
-	"${PROJECT_SOURCE_DIR}/templates/README.md.in"
-	"${CMAKE_CURRENT_LIST_DIR}/README.md"
-)
-
 configure_file (
 	"${PROJECT_SOURCE_DIR}/templates/version.h.in"
 	"${PROJECT_BINARY_DIR}/version.h"
@@ -304,16 +279,6 @@ set(src_utility_files
 set(header_utility_files
 	${PROJECT_BINARY_DIR}/version.h
 )
-
-# Generate doxygen configuration file
-string(REPLACE ";" " " doxygen_src_files "${src_files}" )
-string(REPLACE ";" " " doxygen_header_files "${header_files}" )
-
-configure_file (
-	"${PROJECT_SOURCE_DIR}/templates/doxygen.conf.in"
-	"${PROJECT_BINARY_DIR}/doxygen.conf"
-)
-
 
 # ===========================================
 # Build Test Suite with CuTest (unit testing)
@@ -493,25 +458,11 @@ ADD_PUBLIC_HEADER(libMultiMarkdown Sources/libMultiMarkdown/include/d_string.h)
 ADD_PUBLIC_HEADER(libMultiMarkdown Sources/libMultiMarkdown/include/token.h)
 ADD_PUBLIC_HEADER(libMultiMarkdown Sources/libMultiMarkdown/include/version.h)
 
-# Create a command-line app?
-# if (NOT DEFINED TEST)
-	add_executable(multimarkdown
-		Sources/libMultiMarkdown/d_string.c
-		Sources/multimarkdown/main.c
-		Sources/multimarkdown/argtable3.c
-	)
-# 
-#	Link the library to the app?
-	target_link_libraries(multimarkdown libMultiMarkdown)
-# endif()
-
 # Xcode settings for fat binaries
 set_target_properties(libMultiMarkdown PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
-set_target_properties(multimarkdown PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
 
 # Use C11
 set_property(TARGET libMultiMarkdown PROPERTY C_STANDARD 11)
-set_property(TARGET multimarkdown PROPERTY C_STANDARD 11)
 
 
 # ==========================
@@ -529,11 +480,6 @@ set_property(TARGET multimarkdown PROPERTY C_STANDARD 11)
 
 # install (FILES ${public_header_files} DESTINATION local/include/libFoo) 
 
-# Install MMD binary
-install (TARGETS multimarkdown
-	DESTINATION bin
-	COMPONENT application
-)
 set (CPACK_COMPONENT_APPLICATION_DISPLAY_NAME "MultiMarkdown")
 set (CPACK_COMPONENT_APPLICATION_DESCRIPTION "Install the actual `multimarkdown` program.")
 
