@@ -58,17 +58,14 @@
 
 #include "char.h"
 #include "d_string.h"
-#include "epub.h"
 #include "i18n.h"
 #include "lexer.h"
 #include "libMultiMarkdown.h"
 #include "mmd.h"
 #include "object_pool.h"
-#include "opendocument.h"
 #include "parser.h"
 #include "scanners.h"
 #include "stack.h"
-#include "textbundle.h"
 #include "token.h"
 #include "token_pairs.h"
 #include "writer.h"
@@ -2608,7 +2605,6 @@ void mmd_engine_convert_to_file(mmd_engine * e, short format, const char * direc
 
 	switch (format) {
 		case FORMAT_EPUB:
-			epub_write_wrapper(filepath, output->str, e, directory);
 			break;
 
 		case FORMAT_TEXTBUNDLE:
@@ -2616,7 +2612,6 @@ void mmd_engine_convert_to_file(mmd_engine * e, short format, const char * direc
 			break;
 
 		case FORMAT_TEXTBUNDLE_COMPRESSED:
-			textbundle_write_wrapper(filepath, output->str, e, directory);
 			break;
 
 		default:
@@ -2681,28 +2676,16 @@ DString * mmd_engine_convert_to_data(mmd_engine * e, short format, const char * 
 
 	switch (format) {
 		case FORMAT_EPUB:
-			result = epub_create(output->str, e, directory);
-
-			d_string_free(output, true);
 			break;
 
 		case FORMAT_TEXTBUNDLE:
 		case FORMAT_TEXTBUNDLE_COMPRESSED:
-			result = textbundle_create(output->str, e, directory);
-
-			d_string_free(output, true);
 			break;
 
 		case FORMAT_ODT:
-			result = opendocument_text_create(output->str, e, directory);
-
-			d_string_free(output, true);
 			break;
 
 		case FORMAT_FODT:
-			result = opendocument_flat_text_create(output->str, e, directory);
-
-			d_string_free(output, true);
 			break;
 
 		default:

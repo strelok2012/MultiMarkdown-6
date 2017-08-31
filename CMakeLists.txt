@@ -50,8 +50,11 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	# using Clang
 	# Default is 256 -- needed for localization hash function
 	add_definitions("-fbracket-depth=264")	
+	add_definitions("-DNDEBUG")
 else()
+	add_definitions("-fbracket-depth=264")
 	add_definitions("-std=c99")
+	add_definitions("-DNDEBUG")
 endif()
 
 set(CMAKE_SUPPRESS_REGENERATION 1)
@@ -153,63 +156,43 @@ configure_file (
 # src_files are the primary files, and will be included in doxygen documentation
 set(src_files
 	Sources/libMultiMarkdown/aho-corasick.c
-	Sources/libMultiMarkdown/beamer.c
 	Sources/libMultiMarkdown/char.c
 	Sources/libMultiMarkdown/critic_markup.c
 	Sources/libMultiMarkdown/d_string.c
-	Sources/libMultiMarkdown/epub.c
-	Sources/libMultiMarkdown/fodt.c
 	Sources/libMultiMarkdown/html.c
-	Sources/libMultiMarkdown/latex.c
 	Sources/libMultiMarkdown/lexer.c
-	Sources/libMultiMarkdown/memoir.c
-	Sources/libMultiMarkdown/miniz.c
 	Sources/libMultiMarkdown/mmd.c
 	Sources/libMultiMarkdown/object_pool.c
-	Sources/libMultiMarkdown/opendocument.c
-	Sources/libMultiMarkdown/opendocument-content.c
 	Sources/libMultiMarkdown/parser.c
 	Sources/libMultiMarkdown/rng.c
 	Sources/libMultiMarkdown/scanners.c
 	Sources/libMultiMarkdown/stack.c
-	Sources/libMultiMarkdown/textbundle.c
 	Sources/libMultiMarkdown/token.c
 	Sources/libMultiMarkdown/token_pairs.c
 	Sources/libMultiMarkdown/transclude.c
 	Sources/libMultiMarkdown/uuid.c
 	Sources/libMultiMarkdown/writer.c
-	Sources/libMultiMarkdown/zip.c
 )
 
 # Primary header files, also for doxygen documentation
 set(header_files
 	Sources/libMultiMarkdown/aho-corasick.h
-	Sources/libMultiMarkdown/beamer.h
 	Sources/libMultiMarkdown/char.h
 	Sources/libMultiMarkdown/critic_markup.h
 	Sources/libMultiMarkdown/include/d_string.h
-	Sources/libMultiMarkdown/epub.h
-	Sources/libMultiMarkdown/fodt.h
 	Sources/libMultiMarkdown/html.h
-	Sources/libMultiMarkdown/latex.h
 	Sources/libMultiMarkdown/lexer.h
 	Sources/libMultiMarkdown/include/libMultiMarkdown.h
-	Sources/libMultiMarkdown/memoir.h
-	Sources/libMultiMarkdown/miniz.h
 	Sources/libMultiMarkdown/mmd.h
 	Sources/libMultiMarkdown/object_pool.h
-	Sources/libMultiMarkdown/opendocument.h
-	Sources/libMultiMarkdown/opendocument-content.h
 	Sources/libMultiMarkdown/scanners.h
 	Sources/libMultiMarkdown/stack.h
-	Sources/libMultiMarkdown/textbundle.c
 	Sources/libMultiMarkdown/include/token.h
 	Sources/libMultiMarkdown/token_pairs.h
 	Sources/libMultiMarkdown/transclude.h
 	Sources/libMultiMarkdown/uthash.h
 	Sources/libMultiMarkdown/uuid.h
 	Sources/libMultiMarkdown/writer.h
-	Sources/libMultiMarkdown/zip.h
 )
 
 if (WIN32)
@@ -236,36 +219,6 @@ else()
 		scripts/markdown
 	)
 endif (WIN32)
-
-set (latex
-	texmf/tex/latex/mmd6/README.md
-
-	texmf/tex/latex/mmd6/article/mmd6-article-begin.tex
-	texmf/tex/latex/mmd6/article/mmd6-article-footer.tex
-	texmf/tex/latex/mmd6/article/mmd6-article-leader.tex
-
-	texmf/tex/latex/mmd6/letterhead/mmd-envelope.sty
-	texmf/tex/latex/mmd6/letterhead/mmd-letterhead.sty
-	texmf/tex/latex/mmd6/letterhead/mmd6-letterhead-begin.tex
-	texmf/tex/latex/mmd6/letterhead/mmd6-letterhead-footer.tex
-	texmf/tex/latex/mmd6/letterhead/mmd6-letterhead-leader.tex
-
-	texmf/tex/latex/mmd6/shared/mmd6-criticmarkup.tex
-	texmf/tex/latex/mmd6/shared/mmd6-default-metadata.tex
-	texmf/tex/latex/mmd6/shared/mmd6-memoir-footer.tex
-	texmf/tex/latex/mmd6/shared/mmd6-memoir-layout-8.5x11.tex
-	texmf/tex/latex/mmd6/shared/mmd6-memoir-packages.tex
-	texmf/tex/latex/mmd6/shared/mmd6-memoir-setup.tex
-	texmf/tex/latex/mmd6/shared/mmd6-title.tex
-	texmf/tex/latex/mmd6/shared/mmd6-tufte-footer.tex
-
-	texmf/tex/latex/mmd6/tufte-book/mmd6-tufte-book-begin.tex
-	texmf/tex/latex/mmd6/tufte-book/mmd6-tufte-book-footer.tex
-	texmf/tex/latex/mmd6/tufte-book/mmd6-tufte-book-leader.tex
-	texmf/tex/latex/mmd6/tufte-handout/mmd6-tufte-handout-begin.tex
-	texmf/tex/latex/mmd6/tufte-handout/mmd6-tufte-handout-footer.tex
-	texmf/tex/latex/mmd6/tufte-handout/mmd6-tufte-handout-leader.tex
-)
 
 # Public headers, will be installed in 'include'
 # Do not manually add files here, use the ADD_PUBLIC_HEADER() macro
@@ -514,18 +467,7 @@ if (DEFINED SHAREDBUILD)
 	set (CPACK_COMPONENT_SHAREDLIB_GROUP "MultiMarkdown")
 endif (DEFINED SHAREDBUILD)
 
-# Install LaTeX support files
-install (FILES ${latex}
-	DESTINATION share/texmf/tex/latex/mmd6
-	COMPONENT latex
-	PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
-)
-set (CPACK_COMPONENT_LATEX_DISPLAY_NAME "LaTeX support files")
-set (CPACK_COMPONENT_LATEX_DESCRIPTION "Install configuration files for MultiMarkdown-based LaTex configurations.")
 
-
-# Which groups should be installed?
-set (CPACK_COMPONENTS_ALL application scripts latex)
 
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${My_Project_Description}")
 set (CPACK_PACKAGE_VENDOR "fletcherpenney.net")
@@ -574,21 +516,3 @@ function(ADD_MMD_TEST NAME FLAGS FOLDER EXTENSION)
 	)
 
 endfunction(ADD_MMD_TEST)
-
-
-# MMD 6
-ADD_MMD_TEST(mmd-6 "" MMD6Tests html)
-
-ADD_MMD_TEST(mmd-6-compat "-c" MMD6Tests htmlc)
-
-ADD_MMD_TEST(mmd-6-latex "-t latex" MMD6Tests tex)
-
-ADD_MMD_TEST(mmd-6-odf "-t fodt" MMD6Tests fodt)
-
-ADD_MMD_TEST(mmd-6-critic-accept "-a" CriticMarkup htmla)
-
-ADD_MMD_TEST(mmd-6-critic-reject "-r" CriticMarkup htmlr)
-
-ADD_MMD_TEST(pathologic-compat "-c" ../build html)
-
-ADD_MMD_TEST(pathologic "" ../build html)

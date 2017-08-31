@@ -56,46 +56,13 @@
 
 */
 
-
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 
 #include "d_string.h"
-
-
-/*
- * The following section came from:
- *
- *	http://lists-archives.org/mingw-users/12649-asprintf-missing-vsnprintf-
- *		behaving-differently-and-_vsncprintf-undefined.html
- *
- * and
- *
- *	http://groups.google.com/group/jansson-users/browse_thread/thread/
- *		76a88d63d9519978/041a7d0570de2d48?lnk=raot
- */
-
-// Some operating systems do not supply vasprintf() -- standardize on this
-// replacement from:
-//		https://github.com/esp8266/Arduino/issues/1954
-int vasprintf(char** strp, const char* fmt, va_list ap) {
-	va_list ap2;
-	va_copy(ap2, ap);
-	char tmp[1];
-	int size = vsnprintf(tmp, 1, fmt, ap2);
-
-	if (size <= 0) {
-		return size;
-	}
-
-	va_end(ap2);
-	size += 1;
-	*strp = (char*)malloc(size * sizeof(char));
-	return vsnprintf(*strp, size, fmt, ap);
-}
-
 
 /* DString */
 

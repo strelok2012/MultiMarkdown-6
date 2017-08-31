@@ -60,15 +60,11 @@
 #include "libMultiMarkdown.h"
 
 #include "aho-corasick.h"
-#include "beamer.h"
 #include "char.h"
 #include "d_string.h"
 #include "html.h"
 #include "i18n.h"
-#include "latex.h"
-#include "memoir.h"
 #include "mmd.h"
-#include "opendocument-content.h"
 #include "parser.h"
 #include "scanners.h"
 #include "token.h"
@@ -1810,36 +1806,11 @@ void mmd_engine_export_token_tree(DString * out, mmd_engine * e, short format) {
 
 	switch (scratch->output_format) {
 		case FORMAT_BEAMER:
-			if (scratch->extensions & EXT_COMPLETE) {
-				mmd_start_complete_latex(out, e->dstr->str, scratch);
-			}
-
-			mmd_export_token_tree_beamer(out, e->dstr->str, e->root, scratch);
-
-			mmd_outline_add_beamer(out, NULL, scratch);
-
-			mmd_export_citation_list_beamer(out, e->dstr->str, scratch);
-
-			if (scratch->extensions & EXT_COMPLETE) {
-				mmd_end_complete_beamer(out, e->dstr->str, scratch);
-			}
-
 			break;
 
 		case FORMAT_EPUB:
 		case FORMAT_TEXTBUNDLE:
 		case FORMAT_TEXTBUNDLE_COMPRESSED:
-			scratch->store_assets = true;
-
-			mmd_start_complete_html(out, e->dstr->str, scratch);
-
-			mmd_export_token_tree_html(out, e->dstr->str, e->root, scratch);
-			mmd_export_footnote_list_html(out, e->dstr->str, scratch);
-			mmd_export_glossary_list_html(out, e->dstr->str, scratch);
-			mmd_export_citation_list_html(out, e->dstr->str, scratch);
-
-			mmd_end_complete_html(out, e->dstr->str, scratch);
-
 			break;
 
 		case FORMAT_HTML:
@@ -1859,42 +1830,14 @@ void mmd_engine_export_token_tree(DString * out, mmd_engine * e, short format) {
 			break;
 
 		case FORMAT_LATEX:
-			if (scratch->extensions & EXT_COMPLETE) {
-				mmd_start_complete_latex(out, e->dstr->str, scratch);
-			}
-
-			mmd_export_token_tree_latex(out, e->dstr->str, e->root, scratch);
-			mmd_export_citation_list_latex(out, e->dstr->str, scratch);
-
-			if (scratch->extensions & EXT_COMPLETE) {
-				mmd_end_complete_latex(out, e->dstr->str, scratch);
-			}
-
 			break;
 
 		case FORMAT_MEMOIR:
-			if (scratch->extensions & EXT_COMPLETE) {
-				mmd_start_complete_latex(out, e->dstr->str, scratch);
-			}
-
-			mmd_export_token_tree_memoir(out, e->dstr->str, e->root, scratch);
-			mmd_export_citation_list_latex(out, e->dstr->str, scratch);
-
-			if (scratch->extensions & EXT_COMPLETE) {
-				mmd_end_complete_latex(out, e->dstr->str, scratch);
-			}
-
 			break;
 
 		case FORMAT_ODT:
-			scratch->store_assets = true;
 
 		case FORMAT_FODT:
-//			mmd_start_complete_odf(out, e->dstr->str, scratch);
-
-			mmd_export_token_tree_opendocument(out, e->dstr->str, e->root, scratch);
-
-//			mmd_end_complete_odf(out, e->dstr->str, scratch);
 			break;
 	}
 
